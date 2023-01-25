@@ -15,11 +15,12 @@ Matrix* matrix_create(int row, int col) {
     matrix->rows = row;
     matrix->cols = col;
     matrix->entries = malloc(row * sizeof(double*));
-    for(int i = 0; i < row; i++) matrix->entries[i] = malloc(col * sizeof(double));
+    for(int i = 0; i < row; i++) 
+        matrix->entries[i] = malloc(col * sizeof(double));
     return matrix;
 }
 
-void matrix_fill(Matrix *m, int n) {
+void matrix_fill(Matrix *m, double n) {
     for(int i = 0; i < m->rows; i++) {
         for(int j = 0; j < m->cols; j++) {
             m->entries[i][j] = n;
@@ -37,8 +38,9 @@ void matrix_print(Matrix* m) {
     printf("Rows: %d Columns %d\n", m->rows, m->cols);
     for(int i = 0; i < m->rows; i++) {
         for(int j = 0; j < m->cols; j++) {
-            printf(strcat("%1.3f", ((j + 1 == m->cols) ? "\n" : " ")), m->entries[i][j]);
+            printf("%1.3f\t", m->entries[i][j]);
         }
+        printf("\n");
     }
 }
 
@@ -83,26 +85,6 @@ Matrix* matrix_load(char* file_string) {
     return m;
 }
 
-double uniform_distribution(double low, double high) {
-    double difference = high - low; // The difference between the two
-    int scale = 10000;
-    int scaled_difference = (int) (difference * scale);
-    return low + (1.0 * (rand() % scaled_difference) / scale);
-}
-
-void matrix_randomize(Matrix* m, int n) {
-    // Pulling from a random distribution of
-    // Min: -1 / sqrt(n)
-    // Max: 1 / sqrt(n)
-    double min = -1.0 / sqrt(n);
-    double max = 1.0 / sqrt(n);
-    for(int i = 0; i < m->rows; i++) {
-        for(int j = 0; j < m->cols; j++) {
-            m->entries[i][j] = uniform_distribution(min, max);
-        }
-    }
-}
-
 int matrix_argmax(Matrix *m) {
     // Expects a Mx1 matrix
     double max_score = 0;
@@ -135,7 +117,12 @@ Matrix* matrix_flatten(Matrix* m, int axis) {
     }
     for(int i = 0; i < m->rows; i++) {
         for(int j = 0; j < m->cols; j++) {
-            mat->entries[j * ((m->rows-1)*axis + 1) + (m->cols-1)*(1-axis) + 1][0] = m->entries[i][j];
+            if(axis == 1) {
+                mat->entries[i * m->cols + j][0] = m->entries[i][j];
+            } else {
+                mat->entries[j * m->cols + i][0] = m->entries[i][j];
+            }
+            // mat->entries[j * ((m->rows-1)*axis + 1) + (m->cols-1)*(1-axis) + 1][0] = m->entries[i][j];
         }
     }
     if(axis == 1) {
@@ -199,7 +186,7 @@ Matrix* dot(Matrix* m1, Matrix* m2) {
         for(int j = 0; j < m->cols; j++) {
             int sum = 0;
             for(int k = 0; k < m1->cols; k++) {
-                m->entries[i][j] += m1->entries[i][k] * m2->entries[k][j];
+                sum += m1->entries[i][k] * m2->entries[k][j];
             }
             m->entries[i][j] = sum;
         }
