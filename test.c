@@ -5,7 +5,7 @@ double invert(double x) {
 }
 
 int main() {
-    Matrix *m = matrix_create(3, 3);
+    Matrix *m = matrix_create(4, 3);
     printf("Created\n");
     matrix_print(m);
     printf("Printed\n");
@@ -44,6 +44,11 @@ int main() {
     Matrix *m5 = apply(invert, m);
     printf("Inverted\n");
     matrix_print(m5);
+    printf("Printed\n");
+
+    Matrix *m6 = matrix_reshape(m, 2, 6);
+    printf("Reshaped\n");
+    matrix_print(m6);
     printf("Printed\n");
 
     matrix_free(m);

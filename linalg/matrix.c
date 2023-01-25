@@ -35,12 +35,17 @@ void matrix_free(Matrix *m) {
 }
 
 void matrix_print(Matrix* m) {
+    if(m == NULL) {
+        printf("Null Array Passed");
+    }
+    else {
     printf("Rows: %d Columns %d\n", m->rows, m->cols);
     for(int i = 0; i < m->rows; i++) {
         for(int j = 0; j < m->cols; j++) {
             printf("%1.3f\t", m->entries[i][j]);
         }
         printf("\n");
+    }
     }
 }
 
@@ -120,7 +125,7 @@ Matrix* matrix_flatten(Matrix* m, int axis) {
             if(axis == 1) {
                 mat->entries[i * m->cols + j][0] = m->entries[i][j];
             } else {
-                mat->entries[j * m->cols + i][0] = m->entries[i][j];
+                mat->entries[j * m->rows + i][0] = m->entries[i][j];
             }
             // mat->entries[j * ((m->rows-1)*axis + 1) + (m->cols-1)*(1-axis) + 1][0] = m->entries[i][j];
         }
@@ -129,6 +134,25 @@ Matrix* matrix_flatten(Matrix* m, int axis) {
         Matrix* new_mat = matrix_transpose(mat);
         matrix_free(mat);
         return new_mat;
+    }
+    return mat;
+}
+
+Matrix* matrix_reshape(Matrix* m, int rows, int cols) {
+    if(m->rows * m->cols != rows*cols) {
+        printf("Input Matrix is of size %d", m->rows * m->cols);
+        printf("Output Matrix is of size %d", rows * cols);
+        return NULL;
+    }
+    Matrix* mat = matrix_create(rows, cols);
+    for(int i = 0; i < m->rows; i++) {
+        for(int j = 0; j < m->cols; j++) {
+            double item = m->entries[i][j];
+            int pos = i * m->cols + j;
+            int i_new = pos / cols;
+            int j_new = pos - (cols * i_new);
+            mat->entries[i_new][j_new] = item;
+        }
     }
     return mat;
 }

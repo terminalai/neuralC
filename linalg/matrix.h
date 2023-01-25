@@ -22,6 +22,7 @@ Matrix* matrix_load(char* file_string);
 int matrix_argmax(Matrix* m);
 Matrix* matrix_transpose(Matrix* m);
 Matrix* matrix_flatten(Matrix* m, int axis);
+Matrix *matrix_reshape(Matrix *m, int rows, int cols);
 
 Matrix* multiply(Matrix* m1, Matrix* m2);
 Matrix* add(Matrix* m1, Matrix* m2);
