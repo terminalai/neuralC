@@ -1,9 +1,9 @@
-C_SOURCES = $(wildcard linalg/matrix.c img/img.c *.c)
-HEADERS = $(wildcard linalg/matrix.h img/img.h library.h)
+C_SOURCES = $(wildcard linalg/matrix.c *.c) # img/img.c
+HEADERS = $(wildcard linalg/matrix.h) #img/img.h library.h)
 OBJ = ${C_SOURCES:.c=.o}
 CFLAGS =
 
-MAIN = main
+MAIN = test
 CC = /usr/bin/gcc
 LINKER = /usr/bin/ld
 
@@ -18,4 +18,4 @@ main: ${OBJ}
 	${CC} ${CFLAGS} -c $< -o $@ -lm
 
 clean:
-	rm matrix/*.o *.o img/*.o ./*.o ${MAIN}
+	rm matrix/*.o *.o ${MAIN}
